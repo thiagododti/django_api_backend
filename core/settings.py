@@ -4,7 +4,10 @@ import apps.configuracoes.usuarios
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=".env")
+if not os.path.exists('stack.env'):
+    load_dotenv(dotenv_path='.env')
+else:
+    load_dotenv(dotenv_path='stack.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -57,6 +60,9 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+
+TEMPLATES_DIR = BASE_DIR / 'templates'
+TEMPLATES_DIR.mkdir(exist_ok=True)
 
 TEMPLATES = [
     {
@@ -116,6 +122,8 @@ USE_I18N = True
 USE_TZ = True
 
 # Pode remover quando nao for usar mais como front
+STATIC_DIR = BASE_DIR / 'static'
+STATIC_DIR.mkdir(exist_ok=True)
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
@@ -144,3 +152,32 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+if os.getenv('LOG_REGISTER', False).lower() == 'true':
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'INFO',
+                'class': 'logging.handlers.TimedRotatingFileHandler',
+                'filename': BASE_DIR / 'logs' / 'django.log',
+                'when': 'midnight',
+                'interval': 1,
+                'backupCount': 30,
+                'encoding': 'utf-8',
+                'delay': True,  # <--- evita o lock inicial
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file'],
+                'level': 'INFO',
+                'propagate': True,
+            },
+        },
+    }
