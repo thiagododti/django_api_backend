@@ -1,39 +1,39 @@
-from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, re_path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenVerifyView,
 )
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Documentações Api",
-        default_version='v1',
-        description="Documentação da API do projeto",
-    ),
-
-    public=True,
-    permission_classes=[AllowAny],
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView
 )
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls), # Pode remover quando não trabalhar com Frontend
+    # Se você quiser usar admin, deixe ativado; senão pode remover essa linha
+
     path('api/', include('apps.urls')),
+
+    # JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('swagger.<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
+    path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+
 ]
 
-if settings.DEBUG:
-    # Remove se nao for usar upload de arquivos
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    # Pode remover se não for usar com frontend
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if settings.DEBUG:
+    if getattr(settings, "MEDIA_URL", None) and getattr(settings, "MEDIA_ROOT", None):
+        urlpatterns += static(settings.MEDIA_URL,
+                              document_root=settings.MEDIA_ROOT)
+
+    if getattr(settings, "STATIC_URL", None) and getattr(settings, "STATIC_ROOT", None):
+        urlpatterns += static(settings.STATIC_URL,
+                              document_root=settings.STATIC_ROOT)
