@@ -32,6 +32,7 @@ OTHERS_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',  # para swagger UI
+    "corsheaders",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + OTHERS_APPS
@@ -39,6 +40,7 @@ INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + OTHERS_APPS
 AUTH_USER_MODEL = 'usuarios.Usuario'
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     # <--- deve vir antes da AuthenticationMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -51,6 +53,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.EnforceJSONContentTypeMiddleware',
 ]
+
 
 ROOT_URLCONF = 'core.urls'
 
@@ -152,3 +155,34 @@ if os.getenv('LOG_REGISTER', 'false').lower() == 'true':
             },
         },
     }
+
+# configurações de CORS
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+# Se você precisar enviar cookies / credenciais:
+CORS_ALLOW_CREDENTIALS = True
+
+# (opcional) Métodos e headers permitidos — geralmente os defaults já cobrem:
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
