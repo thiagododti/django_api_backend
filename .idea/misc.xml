@@ -6,5 +6,5 @@
   <component name="EditMigrationStateService">
     <option name="migrationStatus" value="COMPLETED" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.14 (django_api_backend)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (django_api_backend)" project-jdk-type="Python SDK" />
 </project>
