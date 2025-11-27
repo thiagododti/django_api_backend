@@ -2,6 +2,8 @@ from rest_framework import viewsets, mixins
 from rest_framework.permissions import IsAuthenticated
 from ..models import Usuario
 from ..serializers import UsuarioSerializer
+from ..filter.usuario import UsuarioFilterSet
+from drf_spectacular.utils import extend_schema
 
 
 class PermissionsMixin(
@@ -26,7 +28,12 @@ class PermissionsMixin(
     pass
 
 
+@extend_schema(
+    tags=["Usuários"],  # esta será a seção/grupo no Swagger
+    description="Operações de CRUD para usuários."
+)
 class UsuarioViewSet(PermissionsMixin):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     permission_classes = [IsAuthenticated]
+    filterset_class = UsuarioFilterSet

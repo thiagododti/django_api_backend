@@ -25,13 +25,14 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.configuracoes.usuarios.apps.UsuariosConfig',
+    'apps.usuarios.apps.UsuariosConfig',
 ]
 
 OTHERS_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',  # para swagger UI
+    'django_filters',
     "corsheaders",
 ]
 
@@ -112,6 +113,11 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
 }
 
 SPECTACULAR_SETTINGS = {
@@ -119,6 +125,8 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Projeto em django com backend exclusivo para APIs RESTful',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    "SORT_OPERATION_PARAMETERS": False,
+
     # OTHER SETTINGS
 }
 
