@@ -10,7 +10,7 @@ else:
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', 'troque_essa_chave_em_prod')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
@@ -79,12 +79,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
+# Configuração de banco de dados
+# 1 - SQLite
+# 2 - PostgreSQL
+BANCO_SELECIONADO = int(os.getenv('BANCO_SELECIONADO', 1))
+
+if BANCO_SELECIONADO == 1:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
+        }
     }
-}
+elif BANCO_SELECIONADO == 2:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME_POSTGRE', 'seu_banco_de_dados'),
+            'USER': os.getenv('DB_USER_POSTGRE', 'seu_usuario'),
+            'PASSWORD': os.getenv('DB_PASSWORD_POSTGRE', 'sua_senha'),
+            'HOST': os.getenv('DB_HOST_POSTGRE', 'localhost'),
+            'PORT': os.getenv('DB_PORT_POSTGRE', '5432'),
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
