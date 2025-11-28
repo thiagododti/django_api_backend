@@ -7,6 +7,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from apps.usuario.views.autenticacao import CookieTokenRefreshView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView
@@ -20,7 +21,7 @@ urlpatterns = [
 
     # JWT
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
