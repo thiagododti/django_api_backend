@@ -31,10 +31,11 @@ class Usuario(AbstractUser):
         verbose_name="Foto do Usuário"
     )
 
+    def __str__(self):
+        return self.username
+
     class Meta:
         db_table = 'usuario'
         verbose_name = "Usuário"
         verbose_name_plural = "Usuários"
-
-    def __str__(self):
-        return self.username
+        ordering = ['first_name', 'last_name']

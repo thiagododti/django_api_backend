@@ -3,7 +3,7 @@ from apps.usuario.views import UsuarioViewSet
 
 
 router = DefaultRouter()
-router.register(r'usuario',viewset=UsuarioViewSet, basename='usuario')
+router.register(basename='usuario', prefix='', viewset=UsuarioViewSet)
 
 
 urlpatterns = router.urls

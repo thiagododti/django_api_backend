@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from ..models import Usuario
-from ..serializers import UsuarioSerializer, UsuarioMeSerializer
+from ..serializers import UsuarioSerializer, UsuarioAutenticadoSerializer
 from ..filter.usuario import UsuarioFilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -35,9 +35,9 @@ class UsuarioViewSet(PermissionsUsuarioMixin):
     @extend_schema(
         summary="Obter dados do usuário autenticado",
         description="Retorna os dados completos do usuário que está fazendo a requisição autenticada.",
-        responses={200: UsuarioMeSerializer}
+        responses={200: UsuarioAutenticadoSerializer}
     )
-    @action(detail=False, methods=['get'], url_path='me')
+    @action(detail=False, methods=['get'], url_path='autenticado')
     def get_authenticated_user(self, request):
         """
         Endpoint para obter os dados do usuário autenticado.
@@ -45,5 +45,5 @@ class UsuarioViewSet(PermissionsUsuarioMixin):
         Esta view retorna as informações do usuário que está fazendo a requisição,
         baseado no token de autenticação fornecido.
         """
-        serializer = UsuarioMeSerializer(request.user)
+        serializer = UsuarioAutenticadoSerializer(request.user)
         return Response(serializer.data)

@@ -4,6 +4,6 @@ from apps.cliente.views import ClienteViewSet
 
 router = DefaultRouter()
 
-router.register(viewset=ClienteViewSet, basename='cliente', prefix='')
+router.register(basename='cliente', prefix='', viewset=ClienteViewSet)
 
 urlpatterns = router.urls

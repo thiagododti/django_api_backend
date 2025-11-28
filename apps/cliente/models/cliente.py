@@ -26,3 +26,4 @@ class Cliente(models.Model):
         db_table = 'cliente'
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
+        ordering = ['razao_social']

@@ -12,9 +12,9 @@ class UsuarioSerializer(serializers.ModelSerializer):
                             'is_superuser', 'date_joined', 'username', 'email']
 
 
-class UsuarioMeSerializer(serializers.ModelSerializer):
+class UsuarioAutenticadoSerializer(serializers.ModelSerializer):
     """
-    Serializer específico para o endpoint 'me' que retorna dados do usuário autenticado.
+    Serializer específico para o endpoint autenticado que retorna dados do usuário autenticado.
     Inclui apenas os campos mais relevantes para o frontend após o login.
     """
     class Meta:
