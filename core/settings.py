@@ -25,7 +25,8 @@ DJANGO_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.usuarios.apps.UsuariosConfig',
+    'apps.usuario.apps.UsuarioConfig',
+    'apps.cliente.apps.ClienteConfig'
 ]
 
 OTHERS_APPS = [
@@ -38,7 +39,7 @@ OTHERS_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + OTHERS_APPS
 
-AUTH_USER_MODEL = 'usuarios.Usuario'
+AUTH_USER_MODEL = 'usuario.Usuario'
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

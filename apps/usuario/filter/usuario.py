@@ -1,5 +1,5 @@
 import django_filters
-from apps.usuarios.models import Usuario
+from apps.usuario.models import Usuario
 
 
 class UsuarioFilterSet(django_filters.FilterSet):
