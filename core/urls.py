@@ -7,7 +7,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from apps.usuario.views.autenticacao import CookieTokenRefreshView
+
+
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView
@@ -15,15 +16,15 @@ from drf_spectacular.views import (
 
 
 urlpatterns = [
-    # Se você quiser usar admin, deixe ativado; senão pode remover essa linha
-
+    # Local apps
     path('api/', include('apps.urls')),
 
-    # JWT
+    # JWT Auth
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
+    # Swagger UI
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
 
