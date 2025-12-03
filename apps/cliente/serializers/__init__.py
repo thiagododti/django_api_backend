@@ -1,1 +1,3 @@
 from .cliente import ClienteSerializer
+from .pessoa_juridica import PessoaJuridicaSerializer
+from .pessoa_fisica import PessoaFisicaSerializer

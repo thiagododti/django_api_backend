@@ -7,24 +7,24 @@ class Usuario(AbstractUser):
     Modelo personalizado de usuário que estende o AbstractUser do Django.
     Adiciona campos adicionais para armazenar informações específicas do usuário.
     """
-    telefone = models.CharField(
+    TELEFONE = models.CharField(
         max_length=15,
         blank=True,
         null=True,
         verbose_name="Telefone"
     )
-    endereco = models.CharField(
+    ENDERECO = models.CharField(
         max_length=255,
         blank=True,
         null=True,
         verbose_name="Endereço"
     )
-    data_nascimento = models.DateField(
+    DATA_NASCIMENTO = models.DateField(
         blank=True,
         null=True,
         verbose_name="Data de Nascimento"
     )
-    foto = models.ImageField(
+    FOTO = models.ImageField(
         upload_to='fotos_usuarios/',
         blank=True,
         null=True,
@@ -35,7 +35,7 @@ class Usuario(AbstractUser):
         return self.username
 
     class Meta:
-        db_table = 'usuario'
+        db_table = 'USUARIO'
         verbose_name = "Usuário"
         verbose_name_plural = "Usuários"
         ordering = ['first_name', 'last_name']

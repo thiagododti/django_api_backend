@@ -22,7 +22,7 @@ class PermissionsClienteMixin(
     pass
 
 class ClienteViewSet(PermissionsClienteMixin):
-    queryset = Cliente.objects.all()
+    queryset = Cliente.objects.all().select_related('cliente_pessoa_fisica','cliente_pessoa_juridica')
     permission_classes = [IsAuthenticated]
     serializer_class = ClienteSerializer
     filterset_class = ClienteFilterSet

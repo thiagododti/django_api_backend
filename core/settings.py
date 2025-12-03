@@ -26,7 +26,8 @@ DJANGO_APPS = [
 
 LOCAL_APPS = [
     'apps.usuario.apps.UsuarioConfig',
-    'apps.cliente.apps.ClienteConfig'
+    'apps.cliente.apps.ClienteConfig',
+    'apps.departamento.apps.DepartamentoConfig',
 ]
 
 OTHERS_APPS = [

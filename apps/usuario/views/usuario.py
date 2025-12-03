@@ -31,19 +31,3 @@ class UsuarioViewSet(PermissionsUsuarioMixin):
     # opcional, se você usar TokenAuth
     authentication_classes = [JWTAuthentication]
     filterset_class = UsuarioFilterSet
-
-    @extend_schema(
-        summary="Obter dados do usuário autenticado",
-        description="Retorna os dados completos do usuário que está fazendo a requisição autenticada.",
-        responses={200: UsuarioAutenticadoSerializer}
-    )
-    @action(detail=False, methods=['get'], url_path='autenticado')
-    def get_authenticated_user(self, request):
-        """
-        Endpoint para obter os dados do usuário autenticado.
-
-        Esta view retorna as informações do usuário que está fazendo a requisição,
-        baseado no token de autenticação fornecido.
-        """
-        serializer = UsuarioAutenticadoSerializer(request.user)
-        return Response(serializer.data)
