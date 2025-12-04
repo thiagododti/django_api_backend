@@ -3,6 +3,7 @@ import re
 from django.db import models
 from django.forms import ValidationError
 from apps.cliente.models import Cliente
+from apps.cliente.validators.cpf_cnpj_validators import validate_cpf
 
 
 class PessoaFisica(models.Model):
@@ -14,37 +15,28 @@ class PessoaFisica(models.Model):
     NOME = models.CharField(
         max_length=250,
         blank=False,
-        null=False
+        null=False,
+        verbose_name="Nome"
     )
     CPF = models.CharField(
         max_length=11,
         blank=False,
         null=False,
-        unique=True
+        unique=True,
+        validators=[validate_cpf],
+        verbose_name="CPF"
     )
 
     def save(self, *args, **kwargs):
+        # Garante consistência do tipo do cliente
         if not self.CLIENTE.TIPO:
             self.CLIENTE.TIPO = 'cpf'
             self.CLIENTE.save()
-            super().save(*args, **kwargs)
-
-    def validate_cpf(self):
-        cpf = re.sub(r'\D', '', self.CPF)
-        if len(cpf) != 11:
-            raise ValidationError("CPF deve conter 11 dígitos.")
-
-        if cpf == cpf[0] * len(cpf):
-            raise ValidationError("CPF inválido.")
-
-        def calc_digit(digs):
-            s = sum(int(d)*w for d, w in zip(digs, range(len(digs)+1, 1, -1)))
-            r = (s * 10) % 11
-            return '0' if r == 10 else str(r)
-        d1 = calc_digit(cpf[:9])
-        d2 = calc_digit(cpf[:9] + d1)
-        if cpf[-2:] != d1 + d2:
-            raise ValidationError("CPF inválido.")
+        elif self.CLIENTE.TIPO != 'cpf':
+            # Mantém coerência caso o tipo esteja diferente
+            self.CLIENTE.TIPO = 'cpf'
+            self.CLIENTE.save()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.NOME

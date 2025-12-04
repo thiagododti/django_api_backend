@@ -1,62 +1,84 @@
 from django.db import transaction
 from rest_framework import serializers
 
-from . import PessoaFisicaSerializer, PessoaJuridicaSerializer
+from apps.cliente.serializers.pessoa_fisica import PessoaFisicaSerializer
+from apps.cliente.serializers.pessoa_juridica import PessoaJuridicaSerializer
 from ..models import Cliente, PessoaFisica, PessoaJuridica
 from apps.cliente.validators.cpf_cnpj_validators import *
 
 
 class ClienteSerializer(serializers.ModelSerializer):
-    pf = PessoaFisicaSerializer(required=False,allow_null=True)
-    pj = PessoaJuridicaSerializer(required=False,allow_null=True)
+
+    # Mapeia explicitamente os relacionamentos OneToOne pelos related_name dos models
+    pessoa_fisica = PessoaFisicaSerializer(
+        source='cliente_pessoa_fisica', required=False)
+    pessoa_juridica = PessoaJuridicaSerializer(
+        source='cliente_pessoa_juridica', required=False)
 
     class Meta:
         model = Cliente
         fields = '__all__'
+        read_only_fields = ['DATA_CRIACAO']
 
     def validate(self, data):
-        tipo = data.get("TIPO") or getattr(self.instance, "TIPO", None)
+        tipo = data.get('TIPO')
+        # Como os campos usam source, em validated_data eles entram com o nome do source
+        pessoa_fisica = data.get(
+            'cliente_pessoa_fisica') or data.get('pessoa_fisica')
+        pessoa_juridica = data.get(
+            'cliente_pessoa_juridica') or data.get('pessoa_juridica')
 
-        has_cpf = "cpf" in data and data["cpf"] is not None
-        has_cnpj = "cnpj" in data and data["cnpj"] is not None
+        if tipo == 'cpf' and not pessoa_fisica:
+            raise serializers.ValidationError(
+                "Dados de Pessoa Física são obrigatórios para o tipo 'cpf'.")
 
-        if tipo == Cliente.TIPO_PF and not has_cpf and not getattr(self.instance, "pf", None):
-            raise serializers.ValidationError({"pf": "Dados de Pessoa Física são necessários para tipo Pessoa Fisica."})
-        if tipo == Cliente.TIPO_PJ and not has_cnpj and not getattr(self.instance, "pj", None):
-            raise serializers.ValidationError({"pj": "Dados de Pessoa Jurídica são necessários para tipo Pessoa Jurídica."})
-        if tipo not in (Cliente.TIPO_PF, Cliente.TIPO_PJ):
-            raise serializers.ValidationError({"tipo": "Tipo inválido."})
+        if tipo == 'cnpj' and not pessoa_juridica:
+            raise serializers.ValidationError(
+                "Dados de Pessoa Jurídica são obrigatórios para o tipo 'cnpj'.")
+
         return data
 
     def create(self, validated_data):
-        pf_data = validated_data.pop("cliente_pessoa_fisica",None)
-        pj_data = validated_data.pop("cliente_pessoa_juridica",None)
+        # Dados aninhados entram com o nome do source em validated_data
+        pessoa_fisica_data = validated_data.pop('cliente_pessoa_fisica', None)
+        pessoa_juridica_data = validated_data.pop(
+            'cliente_pessoa_juridica', None)
 
         with transaction.atomic():
             cliente = Cliente.objects.create(**validated_data)
-            if cliente.TIPO == Cliente.TIPO_PF and pf_data:
-                PessoaFisica.objects.create(cliente=cliente, **pf_data)
-            elif cliente.TIPO == Cliente.TIPO_PJ and pj_data:
-                PessoaJuridica.objects.create(cliente=cliente, **pj_data)
+
+            if pessoa_fisica_data:
+                PessoaFisica.objects.create(
+                    CLIENTE=cliente, **pessoa_fisica_data)
+
+            if pessoa_juridica_data:
+                PessoaJuridica.objects.create(
+                    CLIENTE=cliente, **pessoa_juridica_data)
+
         return cliente
 
     def update(self, instance, validated_data):
-        pf_data = validated_data.pop("cliente_pessoa_fisica",None)
-        pj_data = validated_data.pop("cliente_pessoa_juridica",None)
+        pessoa_fisica_data = validated_data.pop('cliente_pessoa_fisica', None)
+        pessoa_juridica_data = validated_data.pop(
+            'cliente_pessoa_juridica', None)
 
         with transaction.atomic():
             for attr, value in validated_data.items():
                 setattr(instance, attr, value)
             instance.save()
 
-            # tratar PF
-            if instance.TIPO == Cliente.TIPO_PF:
-                if pf_data:
-                    pf_obj,created = PessoaFisica.objects.update_or_create(cliente=instance,defaults=pf_data)
-                PessoaFisica.objects.filter(cliente=instance).delete()
-            elif instance.TIPO == Cliente.TIPO_PJ:
-                if pj_data:
-                    pj_obj,created = PessoaJuridica.objects.update_or_create(cliente=instance,defaults=pj_data)
-                PessoaJuridica.objects.filter(cliente=instance).delete()
-        return instance
+            if pessoa_fisica_data:
+                pessoa_fisica, _ = PessoaFisica.objects.get_or_create(
+                    CLIENTE=instance)
+                for attr, value in pessoa_fisica_data.items():
+                    setattr(pessoa_fisica, attr, value)
+                pessoa_fisica.save()
 
+            if pessoa_juridica_data:
+                pessoa_juridica, _ = PessoaJuridica.objects.get_or_create(
+                    CLIENTE=instance)
+                for attr, value in pessoa_juridica_data.items():
+                    setattr(pessoa_juridica, attr, value)
+                pessoa_juridica.save()
+
+        return instance

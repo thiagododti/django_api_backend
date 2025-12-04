@@ -23,7 +23,7 @@ class Cliente(models.Model):
     DATA_CRIACAO = models.DateField(auto_now_add=True)
 
     class Meta:
-        db_table = 'cliente'
+        db_table = 'CLIENTE'
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
         ordering = ['DATA_CRIACAO']
