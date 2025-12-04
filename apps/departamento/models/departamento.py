@@ -2,39 +2,39 @@ from django.db import models
 
 
 class Departamento(models.Model):
-    NOME = models.CharField(
+    nome = models.CharField(
         max_length=100,
         verbose_name='Departamento'
     )
-    STATUS = models.BooleanField(
+    status = models.BooleanField(
         default=True,
         verbose_name='Status'
     )
-    DESCRICAO = models.TextField(
+    descricao = models.TextField(
         verbose_name='Descricao'
     )
-    DATA_CRIACAO = models.DateTimeField(
+    data_criacao = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Data de Criação'
     )
-    DATA_ATUALIZACAO = models.DateTimeField(
+    data_atualizacao = models.DateTimeField(
         auto_now=True,
         verbose_name='Data de Atualização'
 
     )
-    DEPARTAMENTO_PAI = models.ForeignKey(
+    departamento_pai = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='departamento_pai',
+        related_name='subdepartamentos',
         verbose_name='Departamento Pai')
 
     def __str__(self):
-        return self.NOME
+        return self.nome
 
     class Meta:
-        db_table = 'DEPARTAMENTO'
+        db_table = 'departamento'
         verbose_name = 'Departamento'
         verbose_name_plural = 'Departamentos'
-        ordering = ['NOME']
+        ordering = ['nome']

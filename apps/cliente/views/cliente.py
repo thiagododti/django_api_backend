@@ -4,7 +4,7 @@ from drf_spectacular.utils import extend_schema
 
 from apps.cliente.models import Cliente
 from apps.cliente.serializers import ClienteSerializer
-from apps.cliente.filters import  ClienteFilterSet
+from apps.cliente.filters import ClienteFilterSet
 
 
 @extend_schema(
@@ -21,8 +21,10 @@ class PermissionsClienteMixin(
 ):
     pass
 
+
 class ClienteViewSet(PermissionsClienteMixin):
-    queryset = Cliente.objects.select_related('cliente_pessoa_fisica','cliente_pessoa_juridica')
+    queryset = Cliente.objects.select_related(
+        'pessoa_fisica', 'pessoa_juridica')
     permission_classes = [IsAuthenticated]
     serializer_class = ClienteSerializer
     filterset_class = ClienteFilterSet

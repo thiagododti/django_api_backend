@@ -6,18 +6,18 @@ from apps.cliente.validators.cpf_cnpj_validators import validate_cnpj
 
 
 class PessoaJuridica(models.Model):
-    CLIENTE = models.OneToOneField(
+    cliente = models.OneToOneField(
         Cliente,
         on_delete=models.CASCADE,
-        related_name='cliente_pessoa_juridica'
+        related_name='pessoa_juridica'
     )
-    RAZAO_SOCIAL = models.CharField(
+    razao_social = models.CharField(
         max_length=250,
         blank=False,
         null=False,
         verbose_name="Razão Social"
     )
-    CNPJ = models.CharField(
+    cnpj = models.CharField(
         max_length=18,
         blank=False,
         null=False,
@@ -27,16 +27,16 @@ class PessoaJuridica(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not self.CLIENTE.TIPO:
-            self.CLIENTE.TIPO = 'cnpj'
-            self.CLIENTE.save()
+        if not self.cliente.tipo:
+            self.cliente.tipo = 'cnpj'
+            self.cliente.save()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.RAZAO_SOCIAL
+        return self.razao_social
 
     class Meta:
-        db_table = 'PESSOA_JURIDICA'
+        db_table = 'pessoa_juridica'
         verbose_name = "Pessoa Juridica"
         verbose_name_plural = "Pessoas Juridica"
-        ordering = ['RAZAO_SOCIAL']
+        ordering = ['razao_social']

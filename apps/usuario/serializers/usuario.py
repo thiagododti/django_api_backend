@@ -6,8 +6,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['id', 'last_login', 'is_superuser', 'username', 'first_name', 'last_name', 'email',
-                  'is_staff', 'is_active', 'date_joined', 'TELEFONE', 'ENDERECO', 'DATA_NASCIMENTO',
-                  'FOTO']
+                  'is_staff', 'is_active', 'date_joined', 'telefone', 'endereco', 'data_nascimento',
+                  'foto']
         read_only_fields = ['id', 'last_login',
                             'is_superuser', 'date_joined', 'username', 'email']
 
@@ -19,7 +19,7 @@ class UsuarioAutenticadoSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Usuario
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'TELEFONE',
-                  'ENDERECO', 'DATA_NASCIMENTO', 'FOTO', 'is_staff', 'is_active', 'last_login']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'telefone',
+                  'endereco', 'data_nascimento', 'foto', 'is_staff', 'is_active', 'last_login']
         read_only_fields = ['id', 'username', 'email',
                             'is_staff', 'is_active', 'last_login']

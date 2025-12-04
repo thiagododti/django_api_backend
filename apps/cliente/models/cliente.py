@@ -11,19 +11,19 @@ class Cliente(models.Model):
     )
 
     # Colunas ####
-    TIPO = models.CharField(
+    tipo = models.CharField(
         max_length=10,
         choices=tipo_choices
     )
-    EMAIL = models.EmailField(
+    email = models.EmailField(
         unique=True,
         blank=True,
         null=True
     )
-    DATA_CRIACAO = models.DateField(auto_now_add=True)
+    data_criacao = models.DateField(auto_now_add=True)
 
     class Meta:
-        db_table = 'CLIENTE'
+        db_table = 'cliente'
         verbose_name = "Cliente"
         verbose_name_plural = "Clientes"
-        ordering = ['DATA_CRIACAO']
+        ordering = ['data_criacao']

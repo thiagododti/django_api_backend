@@ -18,10 +18,10 @@ class ClienteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cliente
         fields = '__all__'
-        read_only_fields = ['DATA_CRIACAO']
+        read_only_fields = ['data_criacao']
 
     def validate(self, data):
-        tipo = data.get('TIPO')
+        tipo = data.get('tipo')
         # Como os campos usam source, em validated_data eles entram com o nome do source
         pessoa_fisica = data.get(
             'cliente_pessoa_fisica') or data.get('pessoa_fisica')
@@ -49,11 +49,11 @@ class ClienteSerializer(serializers.ModelSerializer):
 
             if pessoa_fisica_data:
                 PessoaFisica.objects.create(
-                    CLIENTE=cliente, **pessoa_fisica_data)
+                    cliente=cliente, **pessoa_fisica_data)
 
             if pessoa_juridica_data:
                 PessoaJuridica.objects.create(
-                    CLIENTE=cliente, **pessoa_juridica_data)
+                    cliente=cliente, **pessoa_juridica_data)
 
         return cliente
 
@@ -69,14 +69,14 @@ class ClienteSerializer(serializers.ModelSerializer):
 
             if pessoa_fisica_data:
                 pessoa_fisica, _ = PessoaFisica.objects.get_or_create(
-                    CLIENTE=instance)
+                    cliente=instance)
                 for attr, value in pessoa_fisica_data.items():
                     setattr(pessoa_fisica, attr, value)
                 pessoa_fisica.save()
 
             if pessoa_juridica_data:
                 pessoa_juridica, _ = PessoaJuridica.objects.get_or_create(
-                    CLIENTE=instance)
+                    cliente=instance)
                 for attr, value in pessoa_juridica_data.items():
                     setattr(pessoa_juridica, attr, value)
                 pessoa_juridica.save()
