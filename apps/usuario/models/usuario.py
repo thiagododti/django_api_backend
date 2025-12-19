@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from apps.departamento.models import Departamento
 
 
 class Usuario(AbstractUser):
@@ -29,6 +30,13 @@ class Usuario(AbstractUser):
         blank=True,
         null=True,
         verbose_name="Foto do Usuário"
+    )
+    departamento = models.ForeignKey(
+        Departamento,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Departamento"
     )
 
     def __str__(self):
