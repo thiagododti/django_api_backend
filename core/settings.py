@@ -45,7 +45,6 @@ AUTH_USER_MODEL = 'usuario.Usuario'
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
-    # <--- deve vir antes da AuthenticationMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # Se você não usa cookies de CSRF, pode manter removido, caso contrário reincluir:
@@ -60,13 +59,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
-TEMPLATES_DIR = BASE_DIR / 'templates'
-TEMPLATES_DIR.mkdir(exist_ok=True)
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,7 +86,7 @@ if BANCO_SELECIONADO == 1:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.getenv('DB_NAME', BASE_DIR / 'db.sqlite3'),
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 elif BANCO_SELECIONADO == 2:
@@ -116,11 +113,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_DIR = BASE_DIR / 'static'
-STATIC_DIR.mkdir(exist_ok=True)
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [STATIC_DIR]
+STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
