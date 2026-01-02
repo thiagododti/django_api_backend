@@ -190,7 +190,7 @@ if os.getenv('LOG_REGISTER', 'false').lower() == 'true':
 # configurações de CORS
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3050",
 ]
 
 # Se você precisar enviar cookies / credenciais:
