@@ -30,6 +30,7 @@ LOCAL_APPS = [
     'apps.departamento.apps.DepartamentoConfig',
 ]
 
+
 OTHERS_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
@@ -93,13 +94,19 @@ elif BANCO_SELECIONADO == 2:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME_POSTGRE', 'seu_banco_de_dados'),
-            'USER': os.getenv('DB_USER_POSTGRE', 'seu_usuario'),
-            'PASSWORD': os.getenv('DB_PASSWORD_POSTGRE', 'sua_senha'),
-            'HOST': os.getenv('DB_HOST_POSTGRE', 'localhost'),
-            'PORT': os.getenv('DB_PORT_POSTGRE', '5432'),
+            'NAME': os.getenv('DB_NAME', 'seu_banco_de_dados'),
+            'USER': os.getenv('DB_USER', 'seu_usuario'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'sua_senha'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
         }
     }
+
+# Necessário para createsuperuser --noinput
+os.environ.setdefault(
+    "DJANGO_SUPERUSER_PASSWORD",
+    os.getenv("DJANGO_SUPERUSER_PASSWORD", "")
+)
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
