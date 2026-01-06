@@ -7,6 +7,7 @@ from ..serializers import UsuarioSerializer, UsuarioReadSerializer
 from ..filter.usuario import UsuarioFilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 @extend_schema(
@@ -31,6 +32,7 @@ class UsuarioViewSet(PermissionsUsuarioMixin):
     # opcional, se você usar TokenAuth
     authentication_classes = [JWTAuthentication]
     filterset_class = UsuarioFilterSet
+    parser_classes = [MultiPartParser, FormParser]
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

@@ -3,6 +3,12 @@ from ..models import Usuario
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
+
+    foto = serializers.ImageField(
+        required=False,
+        allow_null=True
+    )
+
     class Meta:
         model = Usuario
         fields = ['id',
@@ -39,6 +45,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+    def validate_foto(self, value):
+        max_size = 2 * 1024 * 1024  # 2MB
+        if value.size > max_size:
+            raise serializers.ValidationError(
+                "A imagem não pode ser maior que 2MB."
+            )
+        return value
+
 
 class UsuarioReadSerializer(serializers.ModelSerializer):
     class Meta:
