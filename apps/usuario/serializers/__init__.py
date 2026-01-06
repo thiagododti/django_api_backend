@@ -1,1 +1,1 @@
-from .usuario import UsuarioSerializer, UsuarioAutenticadoSerializer
+from .usuario import UsuarioSerializer, UsuarioReadSerializer

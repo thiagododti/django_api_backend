@@ -5,21 +5,42 @@ from ..models import Usuario
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'last_login', 'is_superuser', 'username', 'first_name', 'last_name', 'email',
-                  'is_staff', 'is_active', 'date_joined', 'telefone', 'endereco', 'data_nascimento',
+        fields = ['id',
+                  'last_login',
+                  'is_superuser',
+                  'username',
+                  'password',
+                  'first_name',
+                  'last_name',
+                  'email',
+                  'is_staff',
+                  'is_active',
+                  'date_joined',
+                  'telefone',
+                  'endereco',
+                  'data_nascimento',
                   'foto']
-        read_only_fields = ['id', 'last_login',
-                            'is_superuser', 'date_joined', 'username', 'email']
 
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = Usuario(**validated_data)
+        user.set_password(password)  # 🔐 hash correto
+        user.save()
+        return user
 
-class UsuarioAutenticadoSerializer(serializers.ModelSerializer):
-    """
-    Serializer específico para o endpoint autenticado que retorna dados do usuário autenticado.
-    Inclui apenas os campos mais relevantes para o frontend após o login.
-    """
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        if password:
+            instance.set_password(password)
+
+        instance.save()
+        return instance
+
+class UsuarioReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'telefone',
-                  'endereco', 'data_nascimento', 'foto', 'is_staff', 'is_active', 'last_login']
-        read_only_fields = ['id', 'username', 'email',
-                            'is_staff', 'is_active', 'last_login']
+        exclude = ['password']
