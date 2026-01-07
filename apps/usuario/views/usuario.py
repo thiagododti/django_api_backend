@@ -32,7 +32,7 @@ class UsuarioViewSet(PermissionsUsuarioMixin):
     # opcional, se você usar TokenAuth
     authentication_classes = [JWTAuthentication]
     filterset_class = UsuarioFilterSet
-    parser_classes = [MultiPartParser, FormParser]
+    parser_classes = [MultiPartParser]
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

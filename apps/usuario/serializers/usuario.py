@@ -8,24 +8,41 @@ class UsuarioSerializer(serializers.ModelSerializer):
         required=False,
         allow_null=True
     )
+    password = serializers.CharField(
+        write_only=True,
+        required=False,  # ⬅️ nunca obrigatório por padrão
+        min_length=8,
+        style={'input_type': 'password'}
+    )
 
     class Meta:
         model = Usuario
-        fields = ['id',
-                  'last_login',
-                  'is_superuser',
-                  'username',
-                  'password',
-                  'first_name',
-                  'last_name',
-                  'email',
-                  'is_staff',
-                  'is_active',
-                  'date_joined',
-                  'telefone',
-                  'endereco',
-                  'data_nascimento',
-                  'foto']
+        fields = [
+            'id',
+            'last_login',
+            'is_superuser',
+            'username',
+            'password',
+            'first_name',
+            'last_name',
+            'email',
+            'is_staff',
+            'is_active',
+            'date_joined',
+            'telefone',
+            'endereco',
+            'data_nascimento',
+            'foto'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance:
+            # Atualização: senha não é obrigatória
+            self.fields['password'].required = False
+        else:
+            # Criação: senha é obrigatória
+            self.fields['password'].required = True
 
     def create(self, validated_data):
         password = validated_data.pop('password')
