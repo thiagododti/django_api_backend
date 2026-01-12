@@ -10,10 +10,8 @@ from apps.cliente.validators.cpf_cnpj_validators import *
 class ClienteSerializer(serializers.ModelSerializer):
 
     # Mapeia explicitamente os relacionamentos OneToOne pelos related_name dos models
-    pessoa_fisica = PessoaFisicaSerializer(
-        source='cliente_pessoa_fisica', required=False)
-    pessoa_juridica = PessoaJuridicaSerializer(
-        source='cliente_pessoa_juridica', required=False)
+    pessoa_fisica = PessoaFisicaSerializer(required=False)
+    pessoa_juridica = PessoaJuridicaSerializer(required=False)
 
     class Meta:
         model = Cliente
@@ -22,11 +20,9 @@ class ClienteSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         tipo = data.get('tipo')
-        # Como os campos usam source, em validated_data eles entram com o nome do source
-        pessoa_fisica = data.get(
-            'cliente_pessoa_fisica') or data.get('pessoa_fisica')
-        pessoa_juridica = data.get(
-            'cliente_pessoa_juridica') or data.get('pessoa_juridica')
+        # Como os campos não usam source customizado, eles entram com o nome do field
+        pessoa_fisica = data.get('pessoa_fisica')
+        pessoa_juridica = data.get('pessoa_juridica')
 
         if tipo == 'cpf' and not pessoa_fisica:
             raise serializers.ValidationError(
@@ -39,10 +35,9 @@ class ClienteSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        # Dados aninhados entram com o nome do source em validated_data
-        pessoa_fisica_data = validated_data.pop('cliente_pessoa_fisica', None)
-        pessoa_juridica_data = validated_data.pop(
-            'cliente_pessoa_juridica', None)
+        # Dados aninhados entram com o nome do field em validated_data
+        pessoa_fisica_data = validated_data.pop('pessoa_fisica', None)
+        pessoa_juridica_data = validated_data.pop('pessoa_juridica', None)
 
         with transaction.atomic():
             cliente = Cliente.objects.create(**validated_data)
@@ -58,10 +53,8 @@ class ClienteSerializer(serializers.ModelSerializer):
         return cliente
 
     def update(self, instance, validated_data):
-        pessoa_fisica_data = validated_data.pop('cliente_pessoa_fisica', None)
-        pessoa_juridica_data = validated_data.pop(
-            'cliente_pessoa_juridica', None)
-
+        pessoa_fisica_data = validated_data.pop('pessoa_fisica', None)
+        pessoa_juridica_data = validated_data.pop('pessoa_juridica', None)
         with transaction.atomic():
             for attr, value in validated_data.items():
                 setattr(instance, attr, value)
