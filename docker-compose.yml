@@ -4,13 +4,8 @@ services:
   db:
     image: postgres:16
     container_name: postgres_db
-    environment:
-      POSTGRES_DB: backend
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: skmfwfem
-      TZ: America/Sao_Paulo
-    ports:
-      - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
@@ -18,22 +13,38 @@ services:
     networks:
       - mynet
 
-  django:
-    container_name: django_app
-    build: .
-    ports:
-      - "3050:3050"
+  backend:
+    container_name: backend
+    build: ./backend
     env_file:
       - .env
     environment:
       TZ: America/Sao_Paulo
+    volumes:
+      - static_data:/vol/web/static
+      - media_data:/vol/web/media
     depends_on:
       - db
+    expose:
+      - "8000"
+    networks:
+      - mynet
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - static_data:/vol/web/static
+      - media_data:/vol/web/media
+    depends_on:
+      - backend
     networks:
       - mynet
 
 volumes:
   postgres_data:
+  static_data:
+  media_data:
 
 networks:
   mynet:

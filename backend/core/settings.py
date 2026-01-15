@@ -1,20 +1,15 @@
 from datetime import timedelta
 from pathlib import Path
 import os
-from dotenv import load_dotenv
 
-if not os.path.exists('stack.env'):
-    load_dotenv(dotenv_path='.env')
-else:
-    load_dotenv(dotenv_path='stack.env')
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.environ['SECRET_KEY']
 
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = os.environ['DEBUG'].lower() == 'true'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 DJANGO_APPS = [
     'django.contrib.auth',
@@ -78,34 +73,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Configuração de banco de dados
-# 1 - SQLite
-# 2 - PostgreSQL
-BANCO_SELECIONADO = int(os.getenv('BANCO_SELECIONADO', 1))
 
-if BANCO_SELECIONADO == 1:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['POSTGRES_DB'],
+        'USER': os.environ['POSTGRES_USER'],
+        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+        'HOST': os.environ['POSTGRES_HOST'],
+        'PORT': os.environ['POSTGRES_PORT'],
     }
-elif BANCO_SELECIONADO == 2:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('DB_NAME', 'seu_banco_de_dados'),
-            'USER': os.getenv('DB_USER', 'seu_usuario'),
-            'PASSWORD': os.getenv('DB_PASSWORD', 'sua_senha'),
-            'HOST': os.getenv('DB_HOST', 'localhost'),
-            'PORT': os.getenv('DB_PORT', '5432'),
-        }
-    }
+}
 
 # Necessário para createsuperuser --noinput
 os.environ.setdefault(
     "DJANGO_SUPERUSER_PASSWORD",
-    os.getenv("DJANGO_SUPERUSER_PASSWORD", "")
+    os.environ["DJANGO_SUPERUSER_PASSWORD"]
 )
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -121,9 +104,13 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.environ["STATIC_ROOT"]
+
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.environ["MEDIA_ROOT"]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -154,15 +141,15 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.getenv('JWT_ACCESS_MINUTES', 60))),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.getenv('JWT_REFRESH_DAYS', 1))),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.environ['JWT_ACCESS_MINUTES'])),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.environ['JWT_REFRESH_DAYS'])),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
 
-if os.getenv('LOG_REGISTER', 'false').lower() == 'true':
+if os.environ['LOG_REGISTER'].lower() == 'true':
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,

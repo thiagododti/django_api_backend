@@ -2,7 +2,7 @@
 
 echo "Aguardando banco de dados..."
 
-while ! nc -z $DB_HOST $DB_PORT; do
+while ! nc -z $POSTGRES_HOST $POSTGRES_PORT; do
   sleep 1
 done
 
@@ -14,5 +14,7 @@ python manage.py createsuperuser \
   --noinput \
   --username "$DJANGO_SUPERUSER_USERNAME" \
   --email "$DJANGO_SUPERUSER_EMAIL" || true
+
+python manage.py collectstatic --noinput
 
 exec "$@"
