@@ -149,8 +149,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-LOGS_DIR = BASE_DIR / 'logs'
-LOGS_DIR.mkdir(exist_ok=True)
+LOGS_DIR = os.environ['LOG_ROOT']
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 if os.environ['LOG_REGISTER'].lower() == 'true':
     LOGGING = {
@@ -160,7 +160,7 @@ if os.environ['LOG_REGISTER'].lower() == 'true':
             'file': {
                 'level': 'INFO',
                 'class': 'logging.handlers.TimedRotatingFileHandler',
-                'filename': str(BASE_DIR / 'logs' / 'django.log'),
+                'filename': os.path.join(LOGS_DIR, 'django.log'),
                 'when': 'midnight',
                 'interval': 1,
                 'backupCount': 30,
