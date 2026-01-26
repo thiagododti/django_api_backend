@@ -9,7 +9,17 @@ SECRET_KEY = os.environ['SECRET_KEY']
 
 DEBUG = os.environ['DEBUG'].lower() == 'true'
 
-ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+# usa essa opção se for ultilizar o django como backend e frontend juntos
+# CSRF_TRUSTED_ORIGINS = ['https://localhost:8001']
+
+# Passa o IP ou domínio do servidor onde a aplicação estará hospedada
+ALLOWED_HOSTS = ['localhost']
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 DJANGO_APPS = [
     'django.contrib.auth',
@@ -106,9 +116,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.environ["STATIC_ROOT"]
 
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Usa o diretório 'static' na raiz do projeto
 if DEBUG:
     STATICFILES_DIRS = [BASE_DIR / 'static']
 
@@ -152,7 +161,7 @@ SIMPLE_JWT = {
 LOGS_DIR = os.environ['LOG_ROOT']
 os.makedirs(LOGS_DIR, exist_ok=True)
 
-if os.environ['LOG_REGISTER'].lower() == 'true':
+if not DEBUG:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,

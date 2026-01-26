@@ -12,6 +12,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
     networks:
       - mynet
+    restart: unless-stopped
+    
 
   backend:
     container_name: backend
@@ -30,24 +32,35 @@ services:
       - "8000"
     networks:
       - mynet
+    # Define servidores DNS personalizados se precisar resolver nomes de domínio específicos
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    
+    restart: unless-stopped
+    
   nginx:
     build: ./nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - static_data:/vol/web/static
       - media_data:/vol/web/media
       - log_data:/vol/web/logs
+      - certificates_data:/etc/nginx/certs
     depends_on:
       - backend
     networks:
       - mynet
+    restart: unless-stopped
 
 volumes:
   postgres_data:
   static_data:
   media_data:
   log_data:
+  certificates_data:
 
 networks:
   mynet:

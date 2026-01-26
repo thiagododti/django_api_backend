@@ -7,7 +7,15 @@ ENV TZ=America/Sao_Paulo
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y tzdata netcat-openbsd libpq-dev gcc \
+    && apt-get install -y \
+    tzdata \
+    netcat-openbsd \
+    libpq-dev \
+    iputils-ping \
+    net-tools \
+    gcc \
+    pkg-config \
+    default-libmysqlclient-dev \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
     && apt-get clean \
