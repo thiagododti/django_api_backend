@@ -29,7 +29,7 @@ RUN chmod +x /app/entrypoint.sh
 
 COPY . .
 
-RUN mkdir -p /vol/web/static /vol/web/media /vol/web/logs
+RUN mkdir -p /vol/web/media /vol/web/logs
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 

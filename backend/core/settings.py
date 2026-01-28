@@ -5,9 +5,9 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = os.environ['DEBUG'].lower() == 'true'
+DEBUG = os.environ.get('DEBUG', 'false').lower() == 'true'
 
 # usa essa opção se for ultilizar o django como backend e frontend juntos
 # CSRF_TRUSTED_ORIGINS = ['https://localhost:8001']
@@ -87,18 +87,18 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['POSTGRES_DB'],
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': os.environ['POSTGRES_HOST'],
-        'PORT': os.environ['POSTGRES_PORT'],
+        'NAME': os.environ.get('POSTGRES_DB'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
 # Necessário para createsuperuser --noinput
 os.environ.setdefault(
     "DJANGO_SUPERUSER_PASSWORD",
-    os.environ["DJANGO_SUPERUSER_PASSWORD"]
+    os.environ.get("DJANGO_SUPERUSER_PASSWORD", '')
 )
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -114,7 +114,8 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.environ["STATIC_ROOT"]
+# onde o collectstatic vai juntar os arquivos estáticos
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Usa o diretório 'static' na raiz do projeto
@@ -122,7 +123,7 @@ if DEBUG:
     STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.environ["MEDIA_ROOT"]
+MEDIA_ROOT = os.environ.get("MEDIA_ROOT")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -153,12 +154,12 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.environ['JWT_ACCESS_MINUTES'])),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.environ['JWT_REFRESH_DAYS'])),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.environ.get('JWT_ACCESS_MINUTES', 60))),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.environ.get('JWT_REFRESH_DAYS', 1))),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-LOGS_DIR = os.environ['LOG_ROOT']
+LOGS_DIR = os.environ.get('LOG_ROOT', '')
 os.makedirs(LOGS_DIR, exist_ok=True)
 
 if not DEBUG:
